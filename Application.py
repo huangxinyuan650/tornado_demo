@@ -21,6 +21,7 @@ options.parse_command_line()
 
 def import_handler(module_list: list):
     """
+    自动将指定目录下以RequestHandler.py的文件加载，然后HandlerRouter的类变量中将保存加了装饰器的路由信息
     :param module_list:
     :return:
     """
@@ -48,7 +49,7 @@ def main():
         handlers=_handlers,
         template_path=os.path.join(os.path.dirname(__file__), 'template'))
     _http_server = httpserver.HTTPServer(_application, xheaders=True)
-    _http_server.listen(options.port)
+    _http_server.listen(util_objet.config.get_conf(_section='base', _key='port') or options.port)
     logging.info(f'Server is listening port:{options.port}')
     IOLoop.instance().start()
 
