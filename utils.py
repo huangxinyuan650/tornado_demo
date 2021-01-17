@@ -146,8 +146,8 @@ class DataBaseUtil(object):
             max_overflow=DB_MAX_OVERFLOW
         ) if read_path else None
         self._db_engine = _engine
-        self._db = sessionmaker(bind=_engine)
-        self._read = sessionmaker(bind=_read_engine) if _read_engine else self._db
+        self._db = sessionmaker(bind=_engine)()
+        self._read = sessionmaker(bind=_read_engine)() if _read_engine else self._db
 
     @property
     def write(self):

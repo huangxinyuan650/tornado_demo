@@ -27,7 +27,14 @@ class BaseRequestHandler(RequestHandler):
         若此方法调用finish方法或者redirect，处理会在这里终止
         :return:
         """
+        self.request
         logging.info(f'{self.request.method} Request from {self.request.host_name}:{self.request.uri}')
+
+    def get(self, *xargs, **kwargs):
+        pass
+
+    def post(self, *xargs, **kwargs):
+        pass
 
     def on_finish(self) -> None:
         """

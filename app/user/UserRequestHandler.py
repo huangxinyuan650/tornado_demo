@@ -6,8 +6,8 @@ from base.BaseRequestHandler import BaseRequestHandler
 from utils import HandlerRouter
 
 
-@HandlerRouter(path='/login')
+@HandlerRouter(path='/user')
 class UserRequestHandler(BaseRequestHandler):
-
-    def post(self):
-        pass
+    """
+    用户请求处理handler
+    """

@@ -3,15 +3,16 @@
 # Time: 2021/1/17 12:07
 # File: BaseModel.py
 
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, AbstractConcreteBase
 from sqlalchemy import Column, Integer, String
 from utils import util_objet
 
-Base = declarative_base()
+class_registry = {}
+Base = declarative_base(class_registry=class_registry)
 
 
-class BaseModel(Base):
-    id = Column(Integer)
+class BaseModel(AbstractConcreteBase, Base):
+    id = Column(Integer, primary_key=True)
     short_desc = Column(String(20))
 
     @classmethod
