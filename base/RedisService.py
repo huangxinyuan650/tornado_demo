@@ -32,9 +32,17 @@ class RedisService(object):
     @staticmethod
     def set_key_nx(key: str, value: str):
         """
-        设置key、value和过期时间，原子操作，不存在则设置完成并返回1，存在返回0，可做分布式锁
+        设置key、value，原子操作，不存在则设置完成并返回1，存在返回0，可做分布式锁
         :param key:
         :param value:
         :return:
         """
         return util_objet.redis.setnx(name=key, value=value)
+
+    @staticmethod
+    def get_redis_obj():
+        """
+        针对一些极端情况需要拿到redis的控制权，则直接返回redis对象
+        :return:
+        """
+        return util_objet.redis
