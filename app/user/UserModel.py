@@ -1,7 +1,7 @@
 # _*_ coding:utf-8_*_
 # Author:   Ace Huang
 # Time: 2021/1/17 12:18
-# File: ModelUser.py
+# File: UserModel.py
 from base.BaseModel import BaseModel
 from sqlalchemy import Column, Integer, String, Enum, ForeignKey
 import enum

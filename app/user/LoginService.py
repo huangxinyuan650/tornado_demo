@@ -3,7 +3,7 @@
 # Time: 2021/1/17 23:54
 # File: LoginService.py
 from base.BaseService import BaseService
-from app.user.ModelUser import UserInfo
+from app.user.UserModel import UserInfo, RoleBinding
 import uuid
 
 
@@ -16,7 +16,8 @@ class LoginService(BaseService):
         :param password:
         :return:
         """
-        _list = self.utils.db.read.query(UserInfo) \
+        _list = self.utils.db.read.query(UserInfo.id) \
+            .join(RoleBinding, UserInfo.id == RoleBinding.user_id) \
             .filter(UserInfo.user_name == user_name) \
             .filter(UserInfo.authorize_string == password).all()
         _token = uuid.uuid4() if _list else None

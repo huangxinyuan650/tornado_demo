@@ -10,6 +10,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from redis import StrictRedis, ConnectionPool
 from rediscluster import RedisCluster
+import importlib
 
 """
 工具集合
@@ -17,6 +18,27 @@ from rediscluster import RedisCluster
 """
 DB_POOL_SIZE = 10
 DB_MAX_OVERFLOW = 3
+
+
+def import_handler(module_list: list, endswith: str = 'RequestHandler.py'):
+    """
+    自动将指定目录下以RequestHandler.py的文件加载，然后HandlerRouter的类变量中将保存加了装饰器的路由信息
+    :param module_list:
+    :param endswith:
+    :return:
+    """
+    module_list = module_list or []
+    _base_dir = os.path.join(os.path.dirname(__file__))
+    _done_list = []
+    for _ in module_list:
+        _f_l = os.walk(_base_dir, _.replace('.', '/'))
+        for _b, _folder_list, _file_list in _f_l:
+            for _file in _file_list:
+                if _file.endswith(endswith):
+                    _package = _b[len(_base_dir) + 1:].replace('/', '.')
+                    if f'{_package}.{_file[:-3]}' not in _done_list:
+                        _app = importlib.import_module(name=f'.{_file[:-3]}', package=_package)
+                        _done_list.append(f'{_package}.{_file[:-3]}')
 
 
 class Config(object):

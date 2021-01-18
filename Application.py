@@ -9,8 +9,7 @@ from tornado import httpserver
 from tornado.options import options, define
 import logging
 import os
-import importlib
-from utils import util_objet
+from utils import util_objet, import_handler
 from utils import HandlerRouter
 
 logging.basicConfig(level=logging.INFO)
@@ -19,19 +18,6 @@ define(name='port', default=2650, type=int, help='Default Server Port')
 options.parse_command_line()
 
 
-def import_handler(module_list: list):
-    """
-    自动将指定目录下以RequestHandler.py的文件加载，然后HandlerRouter的类变量中将保存加了装饰器的路由信息
-    :param module_list:
-    :return:
-    """
-    module_list = module_list or []
-    for _ in module_list:
-        _f_l = os.walk(os.path.join(os.path.dirname(__file__), _.replace('.', '/')))
-        for _b, _folder_list, _file_list in _f_l:
-            for _file in _file_list:
-                if _file.endswith('RequestHandler.py'):
-                    _app = importlib.import_module(name=f'.{_file[:-3]}', package=_)
 
 
 def main():
