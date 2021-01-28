@@ -11,6 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from redis import StrictRedis, ConnectionPool
 from rediscluster import RedisCluster
 import importlib
+import pika
 
 """
 工具集合
@@ -186,6 +187,70 @@ class DataBaseUtil(object):
     @property
     def db_engine(self):
         return self._db_engine
+
+
+class MessageQueue(object):
+    """
+    消息队列对象，计划使用Redis实现和直接使用RabbitMQ
+    暂时接入RabbitMQ
+    """
+
+    def __init__(self, *xargs, **kwargs):
+        """
+        初始化参数
+        xargs: 保留字段
+        mq_type: rabbitmq、redis
+        mq_host: MQHost
+        mq_port: MQPort rabbitmq default 5672、redis default 6379
+        """
+        self._xargs = xargs
+        self.mq_type = kwargs.get('mq_type', default='rabbitmq')
+        self.mq_host = kwargs.get('mq_host', default='127.0.0.1')
+        self.mq_port = kwargs.get('mq_port', default=5672)
+        self.mq_user = kwargs.get('mq_user')
+        self.mq_passwd = kwargs.get('mq_passwd')
+        self.mq_virtual_host = kwargs.get('mq_virtual_host', default=None)
+        self._initialize()
+
+    def _initialize(self):
+        """
+        根据初始化的参数初始化mq对象
+        """
+        if self.mq_type == 'rabbitmq':
+            _credentials = pika.PlainCredentials(
+                username=self.mq_user,
+                password=self.mq_passwd)
+            _conn_params = pika.ConnectionParameters(
+                host=self.mq_host,
+                port=self.mq_port,
+                virtual_host=self.mq_virtual_host,
+                credentials=_credentials)
+            self._conn = pika.BlockingConnection(parameters=_conn_params)
+        elif self.mq_type == 'redis':
+            pass
+        else:
+            pass
+
+    def get_channel(self, channel_name: str = None):
+        """
+        返回一个channel对象
+        channel_name: channel名称
+        """
+        return self._conn.channel(channel_number=channel_name)
+
+    @property
+    def channel(self):
+        """
+        返回一个默认的channel对象
+        """
+        return self._conn.channel()
+
+    @property
+    def connection(self):
+        """
+        返回连接
+        """
+        return self._conn
 
 
 class UtilsObject(object):
